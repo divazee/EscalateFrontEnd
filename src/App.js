@@ -1,76 +1,76 @@
 import React, {Component} from 'react';
-// import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
 import MyTable from './MyTable';
 
 class App extends Component {
-  state = { 
-    allStaff : []
-   }
-
-   componentDidMount() {
+  constructor(props) {
+    super(props)
+    this.state = { 
+      allStaff : []
+    }
+  }
+  
+  componentDidMount() {
     this.getAllIssues();
   }
 
-  onSubmit = async (e) => {
+  handleSubmit = async (e) => {
     // e.preventDefault();
-    console.log('submitted');
     const {email, name, issue} = this.state;
 
     const data = {email, name, issue};
     console.log(data);
-    axios({
-      method : 'POST',
-      url: 'http://localhost:3000',
-      data : data,
-      json : true
-    })
-    .then(data => {
-      console.log(data);
-      if(data){ alert("form submitted successfully")}
-    })
-    .catch(e => {
-      console.log(e);
-    });
-
-
-    // try{
-    // let result = await axios({ method : 'POST', url: 'http://localhost:3000', data });
-    // if(result){
-    //   alert('form submitted successfully');
-    // }
-    // }catch(e){
+    // axios({
+    //   method : 'POST',
+    //   url: 'http://localhost:3000',
+    //   data,
+    //   json : true
+    // })
+    // .then(data => {
+    //   console.log(data);
+    //   if(data){ alert("form submitted successfully")}
+    // })
+    // .catch(e => {
     //   console.log(e);
-    // }
+    // });
+
+    try {
+    let result = await axios({ method : 'POST', url: 'http://localhost:3000', data });
+    if(result) {
+      alert('form submitted successfully');
+    }
+    } catch(e) { console.log(e) }
   }
 
   getAllIssues = async (e) => {
-    let result = await axios.get('http://127.0.0.1:3000/getuser');
-    console.log(result);
-    this.setState({
-      allStaff : result.data
-    });
+    try{
+      let result = await axios.get('http://127.0.0.1:3000/getusers');
+      console.log(result);
+      this.setState({
+        allStaff : result.data
+      });  
+    } catch(e) {
+      console.log(e)
+    }
   }
 
   handleChange = (e) => {
     const {name, value} = e.target
-    this.setState({
-        [name]: value
-    })
+    this.setState({ [name]: value })
   }
 
   render() { 
     return ( 
       <div className="App">
-        <form action="" method="" className="App-header" onSubmit={this.onSubmit}>
+        <form action="" method="" className="App-header" onSubmit={this.handleSubmit}>
           <div className="form-group">
             <label>Name: </label>
             <input 
               type="text" 
-              placeholder="username" 
+              placeholder="name" 
               name="name"
-              value={this.state.username}
+              value={this.state.name}
               onChange={this.handleChange}/>
           </div>
           <div className="form-group">
@@ -95,7 +95,6 @@ class App extends Component {
         </form>
         
         <MyTable data={this.state.allStaff} />
-        {/* <MyTable /> */}
       </div>
      );
   }
