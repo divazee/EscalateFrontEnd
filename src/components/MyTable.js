@@ -1,11 +1,31 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import { Table } from 'react-bootstrap';
 
     class MyTable extends Component {
-        state = {}
+        state = {
+            allStaff : []
+        }
+
+        componentDidMount() {
+        this.getAllIssues();
+        console.log("commm")
+        }
+
+        getAllIssues = async (e) => {
+            try{
+            let result = await axios.get('http://127.0.0.1:5000/getusers');
+            console.log(result);
+            this.setState({
+                allStaff : result.data
+            });  
+            } catch(e) {
+            console.log(e)
+            }
+        }
 
         renderTableData() {
-            return this.props.data.map((staff, i) => {
+            return this.state.allStaff.map((staff, i) => {
                const { name, email, issue } = staff //destructuring
                return (
                 <tr key={i}>
@@ -20,7 +40,7 @@ import { Table } from 'react-bootstrap';
         
     render() {
         return ( 
-            <div className="">
+            <div className="App-header">
                 <Table striped bordered hover size="sm" variant="dark">
                     <thead>
                         <tr>
